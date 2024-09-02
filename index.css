@@ -1,0 +1,35 @@
+*{padding: 0;margin: 0;}
+.chats{
+    width: 70vw;
+    height: 60vh;
+    border: 2px solid grey;
+    border-radius: 7px;
+    padding: 4px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.chats div{
+    margin-top: 3px;
+}
+
+pre{
+    padding: 3px;
+    width: fit-content;
+    max-width: 75%;
+    background-color: black;
+    border-radius: 5px;
+    font-size: larger;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.p1{
+    color: skyblue;
+    display: flex;
+    justify-content: end;
+}
+
+.p2{
+    color: yellow;
+}

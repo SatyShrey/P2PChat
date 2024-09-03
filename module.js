@@ -83,7 +83,7 @@ function signupPage(){
 }
 
 function loadContacts(){
-   snd('.container').innerHTML='<h3>Contacts</h3><div class="list">Loading....</div>';
+   snd('.container').innerHTML='<div class="contacts"><h3>Contacts</h3><div class="list">Loading....</div></div>';
    get(ref(db,'/contacts')).then((data)=>{
       var dataVal=data.val();
       snd('.list').innerHTML='';
@@ -112,11 +112,15 @@ function signup(){
 document.addEventListener('click',(e)=>{
     if(e.target.className==='contact'){
         email2=e.target.innerHTML;
-        snd('.container').innerHTML=`<h3>Chats</h3><div class="chats">Loading....</div>
+        snd('.container').innerHTML=`<div class=chatSection><h3>Chats</h3><div class="chats">Loading....</div>
         <div class="inputBar">
             <button id="back">Back</button><textarea id="msg"></textarea><button id="send">Send</button>
-        </div>`;
+        </div></div>`;
 
+        snd('#back').addEventListener('click',()=>{
+            clearInterval(recheck);
+            setTimeout(loadContacts,700);
+        })
 
         get(ref(db,'/chats')).then((data)=>{
             snd('.chats').innerHTML='';

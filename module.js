@@ -21,7 +21,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 var form;
 var email;
-var alert;
+var Alert;
 var email2;
 var recheck;
 
@@ -41,49 +41,66 @@ document.addEventListener('DOMContentLoaded',()=>{
 function loginPage(){
     snd('.container').innerHTML=
     `<form id="loginForm">
-            <input required type="email" name="email" placeholder="Email">
-            <input required type="password" name="password" placeholder="Password">
+            <h2>User Login</h2>
+            <dl>
+               <dt><label for="email">Email</label></dt>
+               <dd><input required type="email" name="email"></dd>
+               <dt><label for="password">Password</label></dt>
+               <dd><input required type="password" name="password"></dd>
+            </dt>
             <p id='alert'></p>
             <button type="submit">Login</button>
-            <button id="flip">Go to signup.</button>
+            <p id="flip">Go to signup.</p>
         </form>`;
         form=snd('#loginForm');
-        alert=snd('#alert');
+        Alert=snd('#alert');
         snd('#flip').addEventListener('click',()=>{
             signupPage();
           })
         form.addEventListener('submit',(e)=>{
-            e.preventDefault();           
+            e.preventDefault(); 
+            Alert.innerHTML=`<div class="loader"></div>`;          
             signInWithEmailAndPassword(auth,form.email.value,form.password.value).then(()=>{
+                alert.innerHTML=`<div class="loader"></div>`;
                 login();
-            }).catch((err)=>{alert.innerHTML=err.toString();setTimeout(()=>{alert.innerHTML=''},1200)});
+            }).catch((err)=>{Alert.innerHTML=err.toString().replace('FirebaseError: Firebase:','');
+                setTimeout(()=>{Alert.innerHTML=''},1500)
+            });
         })
 }
 
 function signupPage(){
     snd('.container').innerHTML=
     `<form id="signupForm">
-            <input required type="email" name="email" placeholder="Email">
-            <input required type="password" name="password" placeholder="Password">
+            <h2>New user registration</h2>
+              <dl>
+               <dt><label for="email">Email</label></dt>
+               <dd><input required type="email" name="email"></dd>
+               <dt><label for="password">Password</label></dt>
+               <dd><input required type="password" name="password"></dd>
+            </dt>
             <p id="alert"></p>
             <button type="submit">Signup</button>
-            <button id="flip">Go to login.</button>
+            <p id="flip">Go to login.</p>
         </form>`;
         form=snd('#signupForm');
-        alert=snd('#alert');
+        Alert=snd('#alert');
         snd('#flip').addEventListener('click',()=>{
             loginPage();
           })
         form.addEventListener('submit',(e)=>{
             e.preventDefault();
             createUserWithEmailAndPassword(auth,form.email.value,form.password.value).then(()=>{
+                Alert.innerHTML=`<div class="loader"></div>`;
                 signup();
-            }).catch((err)=>{alert.innerHTML=err.toString();setTimeout(()=>{alert.innerHTML=''},1200)})
+            }).catch((err)=>{Alert.innerHTML=err.toString().replace('FirebaseError: Firebase:','');
+                setTimeout(()=>{Alert.innerHTML=''},1500)
+            })
         })
 }
 
 function loadContacts(){
-   snd('.container').innerHTML='<div class="contacts"><h3>Contacts</h3><div class="list">Loading....</div></div>';
+   snd('.container').innerHTML=`<div class="contacts"><h2>Contacts</h2><button id="logout">Logout</button><br><br><input type='email' id="newContact"><br><button id="add">Add contact</button><div class="list"><div class="loader"></div></div></div>`;
    get(ref(db,'/contacts')).then((data)=>{
       var dataVal=data.val();
       snd('.list').innerHTML='';
@@ -96,30 +113,43 @@ function loadContacts(){
         snd('.list').appendChild(contact);
       }
    });
+
+
+   ////////developement mode........
+   snd('#add').addEventListener('click',()=>{
+    if(snd('#newContact').value===''){
+        alert('Please enter contact and click')
+    }else{
+         alert('sorry work in progress');
+        }
+   })///////////////////////////////////
+
+   snd('#logout').addEventListener('click',()=>{
+    loginPage();
+   })
+
+
 }
 
 function login(){
     email=form.email.value;
-    alert.innerHTML='Login Success...';
-    setTimeout(loadContacts,1000);
+    loadContacts();
 }
 
-function signup(){
-    form.innerHTML='Signup Success...';
-    setTimeout(loginPage,1000);
+function signup(){ 
+    loginPage();
 }
 
 document.addEventListener('click',(e)=>{
     if(e.target.className==='contact'){
         email2=e.target.innerHTML;
-        snd('.container').innerHTML=`<div class=chatSection><h3>Chats</h3><div class="chats">Loading....</div>
+        snd('.container').innerHTML=`<div class='chatSection'><div class="bi bi-person">${email2}</div><div class="chats"><div class="loader"></div></div>
         <div class="inputBar">
-            <button id="back">Back</button><textarea id="msg"></textarea><button id="send">Send</button>
+            <button id="back" class="bi bi-backspace-fill"></button><textarea id="msg"></textarea><button id="send" class="bi bi-send-fill"></button>
         </div></div>`;
 
         snd('#back').addEventListener('click',()=>{
-            clearInterval(recheck);
-            setTimeout(loadContacts,700);
+            clearInterval(recheck);loadContacts();
         })
 
         get(ref(db,'/chats')).then((data)=>{
@@ -143,6 +173,8 @@ document.addEventListener('click',(e)=>{
 
         snd('#send').addEventListener('click',()=>{
             if(snd('#msg').value.trim()!=''){
+                var sent=new Audio('sent.mp3');
+                sent.play();
                 set(ref(db,`/chats/${Date.now()}`),{
                     p1:email,
                     p2:email2,
@@ -153,8 +185,6 @@ document.addEventListener('click',(e)=>{
                 div.setAttribute('class','p1');
                 snd('.chats').appendChild(div);
                 snd('#msg').value='';
-                var sent=new Audio('sent.mp3');
-                sent.play();
                 snd('.chats').scrollTop = snd('.chats').scrollHeight;
             }
         })

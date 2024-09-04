@@ -10,10 +10,6 @@ header{
     padding: 5px 0px;
 }
 
-h2{
-    margin-bottom: 10px;
-}
-
 .logo{
     color: orange;
     margin-left: 10px;
@@ -105,8 +101,14 @@ cursor: pointer;
 
 #alert{
     height: 20px;
-    font-size: 14px;
+    font-size: small;
     color: red;
+}
+
+.success{
+    color: Green;
+    font-size: larger;
+    font-weight: bold;
 }
 
 /*contacts............................*/
@@ -119,11 +121,30 @@ cursor: pointer;
     margin: 4px 0px;
     transition: .4s;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    max-width: 97vw;
+    overflow: hidden;
+}
+
+.contacts b{
+    color: darkblue;
+}
+
+.list{
+    margin-top: 20px;
+    height: 67vh;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.list i{
+    color: red;
+    font-size: small;
 }
 
 .contact:hover{
-    background-color: orange;
-    color: black;
+    background-color: rgb(49, 49, 49);
 }
 
 #add{
@@ -133,6 +154,12 @@ cursor: pointer;
 
 #logout{
     background-color: black;
+}
+#logout:hover{
+    background-color: rgb(49, 49, 49)
+}
+#logout:active{
+    color: red;
 }
 
 /*chatings.......................*/
@@ -152,7 +179,7 @@ cursor: pointer;
     scrollbar-width: none;
 }
 
-.chatSection .bi-person{
+.chatSection .person{
     background-color: black;
     color: white;
     padding: 4px;
@@ -176,15 +203,28 @@ textarea{
 }
 
 #back{
-    background-color: orange;
+    background-color: transparent;
     height: 60px;
-    width: 14%;
+    font-size: 40px;
 }
 #send{
-    background-color: green;
+    background-color: transparent;
     height: 60px;
-    width: 14%;
+    font-size: 20px;
+    color: green;
 }
+
+#send:hover{
+    box-shadow: 0px 0px 7px white;
+}
+
+#send:active{
+    color: red;
+}
+
+#back:hover{
+    transform: translate(-9px);
+ }
 
 pre{
     padding: 4px;

@@ -58,11 +58,12 @@ function loginPage(){
             signupPage();
           })
         form.addEventListener('submit',(e)=>{
-            e.preventDefault(); 
+            e.preventDefault();
+            email=form.email.value;
             Alert.innerHTML=`<div class="loader"></div>`;          
-            signInWithEmailAndPassword(auth,form.email.value,form.password.value).then(()=>{
-                alert.innerHTML=`<div class="loader"></div>`;
-                login();
+            signInWithEmailAndPassword(auth,email,form.password.value).then(()=>{
+                form.innerHTML=`<i class="success">Login success...</i>`;
+                setTimeout(()=>{loadContacts();},1000);
             }).catch((err)=>{Alert.innerHTML=err.toString().replace('FirebaseError: Firebase:','');
                 setTimeout(()=>{Alert.innerHTML=''},1500)
             });
@@ -90,9 +91,12 @@ function signupPage(){
           })
         form.addEventListener('submit',(e)=>{
             e.preventDefault();
-            createUserWithEmailAndPassword(auth,form.email.value,form.password.value).then(()=>{
-                Alert.innerHTML=`<div class="loader"></div>`;
-                signup();
+            email=form.email.value;
+            Alert.innerHTML='<div class="loader"></div>';
+            createUserWithEmailAndPassword(auth,email,form.password.value).then(()=>{
+                form.innerHTML=`<i class="success">Signup success...</i>`;
+                set(ref(db,`/profiles/${Date.now()}`),`${email}`);
+                setTimeout(()=>{loginPage();},1000);
             }).catch((err)=>{Alert.innerHTML=err.toString().replace('FirebaseError: Firebase:','');
                 setTimeout(()=>{Alert.innerHTML=''},1500)
             })
@@ -100,29 +104,28 @@ function signupPage(){
 }
 
 function loadContacts(){
-   snd('.container').innerHTML=`<div class="contacts"><h2>Contacts</h2><button id="logout">Logout</button><br><br><input type='email' id="newContact"><br><button id="add">Add contact</button><div class="list"><div class="loader"></div></div></div>`;
-   get(ref(db,'/contacts')).then((data)=>{
+   snd('.container').innerHTML=`<div class="contacts">
+      <b>🥰${email} </b><button id="logout">🔒Logout</button>
+      <div class="list">
+        <div class="loader"></div>
+      </div>
+   </div>`;
+
+   get(ref(db,'/profiles')).then((data)=>{
       var dataVal=data.val();
       snd('.list').innerHTML='';
-      var personArray=dataVal.filter(obj=>obj.email===email);
-      var contacts=personArray.map(person=>person.contacts)[0].split(',');
-      for(var x in contacts){
-        var contact=sndC('p');
-        contact.setAttribute('class','contact');
-        contact.innerHTML=contacts[x];
-        snd('.list').appendChild(contact);
-      }
+      if(dataVal != null){
+        for(var x in dataVal){
+            if(dataVal[x] != email){
+                var contact=sndC('p');
+                contact.setAttribute('class','contact');
+                contact.innerHTML=`☺️${dataVal[x]} <span>✉️</span>`;
+                contact.setAttribute('id',dataVal[x]);
+                snd('.list').appendChild(contact);
+            }
+          }
+      } else{snd('.list').innerHTML='<i>Sorry no accounts found for chatting.</i>'}
    });
-
-
-   ////////developement mode........
-   snd('#add').addEventListener('click',()=>{
-    if(snd('#newContact').value===''){
-        alert('Please enter contact and click')
-    }else{
-         alert('sorry work in progress');
-        }
-   })///////////////////////////////////
 
    snd('#logout').addEventListener('click',()=>{
     loginPage();
@@ -131,25 +134,19 @@ function loadContacts(){
 
 }
 
-function login(){
-    email=form.email.value;
-    loadContacts();
-}
-
-function signup(){ 
-    loginPage();
-}
-
 document.addEventListener('click',(e)=>{
     if(e.target.className==='contact'){
-        email2=e.target.innerHTML;
-        snd('.container').innerHTML=`<div class='chatSection'><div class="bi bi-person">${email2}</div><div class="chats"><div class="loader"></div></div>
+        email2=e.target.id;
+        snd('.container').innerHTML=`<div class='chatSection'>
+        <div class="person">🥰${email2}</div><div class="chats"><div class="loader"></div></div>
         <div class="inputBar">
-            <button id="back" class="bi bi-backspace-fill"></button><textarea id="msg"></textarea><button id="send" class="bi bi-send-fill"></button>
+            <button id="back">🔙</button><textarea id="msg"></textarea>
+            <button id="send">Send</button>
         </div></div>`;
 
         snd('#back').addEventListener('click',()=>{
-            clearInterval(recheck);loadContacts();
+            clearInterval(recheck);
+            loadContacts();
         })
 
         get(ref(db,'/chats')).then((data)=>{
@@ -181,7 +178,7 @@ document.addEventListener('click',(e)=>{
                     chat:snd('#msg').value
                 });
                 var div=sndC('div');
-                div.innerHTML=`<pre>${snd('#msg').value}</pre>`;
+                div.innerHTML=`<pre>${snd('#msg').value.replaceAll("<","&lt;").replaceAll(">","&gt;")}</pre>`;
                 div.setAttribute('class','p1');
                 snd('.chats').appendChild(div);
                 snd('#msg').value='';

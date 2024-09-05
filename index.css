@@ -86,13 +86,9 @@ label{
 input{
     font-size: large;
     padding: 4px;
-    outline: none;
     border: 2px solid orange;
     border-radius: 0px 3px 3px 3px;
 }
-
-input:hover{
-    background-color: aqua;}
 
 h2{
     margin-bottom: 20px;

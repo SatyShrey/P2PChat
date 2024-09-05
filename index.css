@@ -288,6 +288,7 @@ textarea{
     height: 54px;
     font-size: 17px;
     padding: 3px;
+    background-color:transparent;
 }
 
 #send:hover{

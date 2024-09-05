@@ -24,6 +24,10 @@ var email;
 var Alert;
 var email2;
 var recheck;
+var authError='FirebaseError: Firebase: Error (auth/invalid-credential).';
+var existError="FirebaseError: Firebase: Error (auth/email-already-in-use).";
+var passwordError="FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password).";
+var accessError="FirebaseError: Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).";
 
 ///my function
 function snd(query){return document.querySelector(query);}
@@ -32,10 +36,12 @@ function sndC(query){return document.createElement(query);}
 
 //event listener..........................
 document.addEventListener('DOMContentLoaded',()=>{
+  if(sessionStorage.getItem('email')){
+        loadContacts();
+  }else{
     loginPage();
+  }
 })
-
-
 
 //functions.......................................
 function loginPage(){
@@ -48,9 +54,9 @@ function loginPage(){
                <dt><label for="password">Password</label></dt>
                <dd><input required type="password" name="password"></dd>
             </dt>
-            <p id='alert'></p>
             <button type="submit">Login</button>
             <p id="flip">Go to signup.</p>
+            <div id="alert"></div>
         </form>`;
         form=snd('#loginForm');
         Alert=snd('#alert');
@@ -60,11 +66,18 @@ function loginPage(){
         form.addEventListener('submit',(e)=>{
             e.preventDefault();
             email=form.email.value;
-            Alert.innerHTML=`<div class="loader"></div>`;          
+            Alert.innerHTML=`<div class="loaderContainer"><div class="loader"></div></div>`;          
             signInWithEmailAndPassword(auth,email,form.password.value).then(()=>{
                 form.innerHTML=`<i class="success">Login success...</i>`;
+                sessionStorage.setItem('email',email);
                 setTimeout(()=>{loadContacts();},1000);
-            }).catch((err)=>{Alert.innerHTML=err.toString().replace('FirebaseError: Firebase:','');
+            }).catch((err)=>{
+                if(err.toString()===authError){
+                    Alert.innerHTML='<i>Error: Invalid credentials.</i>';
+                }else if(err.toString()===accessError){
+                    Alert.innerHTML='<i>Error: So many attempts. Please try again later.</i>';
+                }
+                else{Alert.innerHTML=`<i>${err}</i>`;}
                 setTimeout(()=>{Alert.innerHTML=''},1500)
             });
         })
@@ -79,10 +92,12 @@ function signupPage(){
                <dd><input required type="email" name="email"></dd>
                <dt><label for="password">Password</label></dt>
                <dd><input required type="password" name="password"></dd>
+               <dt><label for="confirmPassword">Confim Password</label></dt>
+               <dd><input required type="password" name="confirmPassword"></dd>
             </dt>
-            <p id="alert"></p>
             <button type="submit">Signup</button>
             <p id="flip">Go to login.</p>
+            <div id="alert"></div>
         </form>`;
         form=snd('#signupForm');
         Alert=snd('#alert');
@@ -92,22 +107,37 @@ function signupPage(){
         form.addEventListener('submit',(e)=>{
             e.preventDefault();
             email=form.email.value;
-            Alert.innerHTML='<div class="loader"></div>';
-            createUserWithEmailAndPassword(auth,email,form.password.value).then(()=>{
-                form.innerHTML=`<i class="success">Signup success...</i>`;
-                set(ref(db,`/profiles/${Date.now()}`),`${email}`);
-                setTimeout(()=>{loginPage();},1000);
-            }).catch((err)=>{Alert.innerHTML=err.toString().replace('FirebaseError: Firebase:','');
+            Alert.innerHTML='<div class="loaderContainer"><div class="loader"></div></div>';
+            if(form.password.value===form.confirmPassword.value){
+                createUserWithEmailAndPassword(auth,email,form.password.value).then(()=>{
+                    form.innerHTML=`<i class="success">Signup success...</i>`;
+                    set(ref(db,`/profiles/${Date.now()}`),`${email}`);
+                    setTimeout(()=>{loginPage();},1000);
+                }).catch((err)=>{
+                    if(err.toString()===existError){
+                        Alert.innerHTML=`<i>Error: Email already in use.</i>`;
+                    }
+                    else if(err.toString()===passwordError){
+                        Alert.innerHTML=`<i>Error: Password must have six digits.</i>`;
+                    }
+                    else{
+                        Alert.innerHTML=`<i>${err}</i>`;
+                    }
+                    setTimeout(()=>{Alert.innerHTML=''},1500)
+                })
+            }else{
+                Alert.innerHTML=`<i>Error: Confirm your password.</i>`;
                 setTimeout(()=>{Alert.innerHTML=''},1500)
-            })
+            }
         })
 }
 
 function loadContacts(){
+    email=sessionStorage.getItem('email');
    snd('.container').innerHTML=`<div class="contacts">
       <b>🥰${email} </b><button id="logout">🔒Logout</button>
       <div class="list">
-        <div class="loader"></div>
+        <div class="loaderContainer"><div class="loader"></div></div>
       </div>
    </div>`;
 
@@ -128,7 +158,11 @@ function loadContacts(){
    });
 
    snd('#logout').addEventListener('click',()=>{
-    loginPage();
+    var logout=confirm('Are you sure to logout?');
+    if(logout){
+        sessionStorage.removeItem('email');
+        loginPage();
+    }
    })
 
 
@@ -138,7 +172,7 @@ document.addEventListener('click',(e)=>{
     if(e.target.className==='contact'){
         email2=e.target.id;
         snd('.container').innerHTML=`<div class='chatSection'>
-        <div class="person">🥰${email2}</div><div class="chats"><div class="loader"></div></div>
+        <div class="person">🥰${email2}</div><div class="chats"><div class="loaderContainer"><div class="loader"></div></div></div>
         <div class="inputBar">
             <button id="back">🔙</button><textarea id="msg"></textarea>
             <button id="send">Send</button>

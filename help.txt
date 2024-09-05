@@ -1,0 +1,5 @@
+FirebaseError: Firebase: Error (auth/invalid-credential).
+
+FirebaseError: Firebase: Error (auth/email-already-in-use).
+
+FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password).

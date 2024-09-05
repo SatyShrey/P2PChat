@@ -327,6 +327,8 @@ pre{
     color: yellow;
 }
 
+·screenError{display:none}
+
 @media (max-width:250px){
     .logo{
         font-size: medium;

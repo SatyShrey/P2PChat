@@ -92,7 +92,7 @@ function signupPage(){
                <dd><input required type="email" name="email"></dd>
                <dt><label for="password">Password</label></dt>
                <dd><input required type="password" name="password"></dd>
-               <dt><label for="confirmPassword">Confim Password</label></dt>
+               <dt><label for="confirmPassword">Confirm Password</label></dt>
                <dd><input required type="password" name="confirmPassword"></dd>
             </dt>
             <button type="submit">Signup</button>

@@ -49,7 +49,7 @@ function loginPage(){
     `<form id="loginForm">
             <h2>User Login</h2>
             <dl>
-               <dt><label for="email">Email</label></dt>
+               <dt><label >Email</label></dt>
                <dd><input required type="email" name="email"></dd>
                <dt><label for="password">Password</label></dt>
                <dd><input required type="password" name="password"></dd>

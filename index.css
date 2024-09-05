@@ -72,7 +72,6 @@ form{
     background-color:rgba(0,0,0,.5);
     padding:10px;
     border-radius: 4px;
-    transition: 1s;
 }
 
 label{
@@ -85,8 +84,6 @@ label{
 
 input{
     padding: 4px;
-    border: 2px solid orange;
-    border-radius: 0px 3px 3px 3px;
 }
 
 h2{
@@ -109,6 +106,8 @@ button[type=submit]{
 
 dd{
     margin-bottom: 10px;
+    border: 2px solid orange;
+    border-radius: 0px 3px 3px 3px;
 }
 
 #flip{
@@ -303,20 +302,8 @@ pre{
     color: yellow;
 }
 
-#displayError{
-    display: none;
-    color: red;
-    padding: 2px;
-}
-
 @media (max-width:300px) or (max-height:300px) {
-    .container{
-        display: none;
-    }
-    header{
-        display: none;
-    }
-    #displayError{
-        display: block;
+    .logo{
+        font-size: medium;
     }
 }

@@ -50,7 +50,7 @@ function loginPage(){
             <h2>User Login</h2>
             <dl>
                <dt><label >Email</label></dt>
-               <dd><input required type="email" name="email"></dd>
+               <dd><input required type='email' name='email'></dd>
                <dt><label for="password">Password</label></dt>
                <dd><input required type="password" name="password"></dd>
             </dt>
@@ -70,7 +70,7 @@ function loginPage(){
             signInWithEmailAndPassword(auth,email,form.password.value).then(()=>{
                 form.innerHTML=`<i class="success">Login success...</i>`;
                 sessionStorage.setItem('email',email);
-                setTimeout(()=>{loadContacts();},1000);
+                setTimeout(()=>{loadContacts();},900);
             }).catch((err)=>{
                 if(err.toString()===authError){
                     Alert.innerHTML='<i>Error: Invalid credentials.</i>';
@@ -112,7 +112,7 @@ function signupPage(){
                 createUserWithEmailAndPassword(auth,email,form.password.value).then(()=>{
                     form.innerHTML=`<i class="success">Signup success...</i>`;
                     set(ref(db,`/profiles/${Date.now()}`),`${email}`);
-                    setTimeout(()=>{loginPage();},1000);
+                    setTimeout(()=>{loginPage();},900);
                 }).catch((err)=>{
                     if(err.toString()===existError){
                         Alert.innerHTML=`<i>Error: Email already in use.</i>`;
@@ -139,7 +139,9 @@ function loadContacts(){
       <div class="list">
         <div class="loaderContainer"><div class="loader"></div></div>
       </div>
-   </div>`;
+   </div><div id="alert"></div>`;
+
+   Alert=document.getElementById('alert');
 
    get(ref(db,'/profiles')).then((data)=>{
       var dataVal=data.val();
@@ -157,17 +159,31 @@ function loadContacts(){
       } else{snd('.list').innerHTML='<i>Sorry no accounts found for chatting.</i>'}
    });
 
+
+   //logout...............................................................
    snd('#logout').addEventListener('click',()=>{
-    var logout=confirm('Are you sure to logout?');
-    if(logout){
+    Alert.innerHTML=`<div class="alertBox">
+        <p>Are you sure to logout?</p>
+        <button id="yes">yes</button><button id="no">no</button>
+    </div>`;
+    document.querySelector('.contacts').style.pointerEvents='none';
+
+    //confirm logout............................
+    document.getElementById('yes').addEventListener('click',()=>{
         sessionStorage.removeItem('email');
         loginPage();
-    }
+    })
+
+    //cancel logout............................
+    document.getElementById('no').addEventListener('click',()=>{
+        document.querySelector('.contacts').style.pointerEvents='all';
+        Alert.innerHTML='';
+    })
+
    })
-
-
 }
 
+//go to chatting screen.........................
 document.addEventListener('click',(e)=>{
     if(e.target.className==='contact'){
         email2=e.target.id;

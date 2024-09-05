@@ -40,6 +40,7 @@ button:hover{
     flex-direction: column;
     height: 90vh;
     width: 100vw;
+    position: relative;
 }
 
 /*loaders..........................*/
@@ -70,7 +71,7 @@ form{
     flex-direction: column;
     align-items: center;
     background-color:rgba(0,0,0,.5);
-    padding:10px;
+    padding:0px 30px 7px 30px;
     border-radius: 4px;
 }
 
@@ -127,13 +128,37 @@ color: lightblue;
 }
 
 #alert{
-    height: 20px;
     color: red;
     width: 100vw;
     text-align: center;
     position: absolute;
     left: 0px;
     top: 50%;
+}
+
+.alertBox{
+    background-color: black;
+    border-radius: 4px;
+    padding: 4px;
+    color: orange;
+    font-weight: bold;
+    width: fit-content;
+    margin: auto;
+}
+
+#yes,#no{
+    width: 50px;
+    height: 40px;
+}
+
+#yes{
+    margin: 2px;
+    background-color: red; 
+}
+
+#no{
+    margin: 2px;
+    background-color: green;
 }
 
 #alert i{
@@ -302,8 +327,20 @@ pre{
     color: yellow;
 }
 
-@media (max-width:300px) or (max-height:300px) {
+@media (max-width:250px){
     .logo{
         font-size: medium;
+    }
+    .container{
+        display: none;
+    }
+    .screenError{
+        display: block;
+        color: red;
+        padding: 3px;
+        background-color: black;
+    }
+    header{
+        display: none;
     }
 }

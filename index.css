@@ -144,6 +144,7 @@ color: lightblue;
     font-weight: bold;
     width: fit-content;
     margin: auto;
+    transform: translateY(-90%);
 }
 
 #yes,#no{
@@ -153,7 +154,7 @@ color: lightblue;
 
 #yes{
     margin: 2px;
-    background-color: orange; 
+    background-color:orange; 
 }
 
 #no{
@@ -327,7 +328,9 @@ pre{
     color: yellow;
 }
 
-.screenError{display:none}
+.screenError{
+    display: none;
+}
 
 @media (max-width:250px){
     .logo{

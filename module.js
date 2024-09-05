@@ -191,7 +191,7 @@ document.addEventListener('click',(e)=>{
         <div class="person">🥰${email2}</div><div class="chats"><div class="loaderContainer"><div class="loader"></div></div></div>
         <div class="inputBar">
             <button id="back">🔙</button><textarea id="msg"></textarea>
-            <button id="send">Send</button>
+            <button id="send">&#10148;</button>
         </div></div>`;
 
         snd('#back').addEventListener('click',()=>{

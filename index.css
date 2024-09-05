@@ -270,7 +270,7 @@ border: 2px solid aqua;
 
 textarea{
     resize: none;
-    height: 60px;
+    height: 90px;
     margin: 3px 0px;
     width: 70%;
     outline: 2px solid aqua;
@@ -280,20 +280,19 @@ textarea{
 
 #back{
     background-color: transparent;
-    height: 60px;
+    height: 90px;
     font-size: 40px;
 }
 #send{
     color: green;
-    height: 54px;
-    font-size: 40px;
+    height: 90px;
+    font-size: 60px;
     padding: 3px;
     background-color:transparent;
 }
 
 #send:hover{
-    box-shadow: 0px 0px 7px black inset;
-    color: aqua;
+    transform: translate(9px);
 }
 
 #send:active{

@@ -275,6 +275,7 @@ textarea{
     width: 70%;
     outline: 2px solid aqua;
     border-radius: 5px;
+    padding: 3px;
     scrollbar-width: none;
 }
 

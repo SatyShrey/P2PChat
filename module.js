@@ -203,16 +203,19 @@ document.addEventListener('click',(e)=>{
         get(ref(db,'/chats')).then((data)=>{
             snd('.chats').innerHTML='';
             var dataVal=data.val();
+            var chatBox=[];
             for(var x in dataVal){
-                if((dataVal[x].p1===email && dataVal[x].p2===email2) || (dataVal[x].p2===email && dataVal[x].p1===email2)){                  
-                   var div=sndC('div');
-                   if(dataVal[x].p1===email){div.setAttribute('class','p1')}
-                   else{div.setAttribute('class','p2')}
-                   div.setAttribute('id',dataVal[x].chatId);
-                   div.innerHTML=`<pre>${dataVal[x].chat}</pre>`;
-                   snd('.chats').appendChild(div);
+                if((dataVal[x].p1===email && dataVal[x].p2===email2) || (dataVal[x].p2===email && dataVal[x].p1===email2)){
+                    chatBox.push(dataVal[x])
                 }
             }
+            chatBox.map(obj=>{
+                var div=sndC('div');
+                if(obj.p1===email){div.setAttribute('class','p1')}
+                else{div.setAttribute('class','p2')}
+                div.innerHTML=`<pre>${obj.chat}</pre>`;
+                snd('.chats').appendChild(div);
+            });
         }).then(()=>{
             snd('.chats').scrollTop = snd('.chats').scrollHeight;
             checkMsg();
@@ -225,8 +228,7 @@ document.addEventListener('click',(e)=>{
                 set(ref(db,`/chats/${Date.now()}`),{
                     p1:email,
                     p2:email2,
-                    chat:snd('#msg').value,
-                    chatId:Date.now()
+                    chat:snd('#msg').value
                 });
                 var div=sndC('div');
                 div.innerHTML=`<pre>${snd('#msg').value.replaceAll("<","&lt;").replaceAll(">","&gt;")}</pre>`;
@@ -243,26 +245,28 @@ document.addEventListener('click',(e)=>{
 
 function checkMsg(){
     recheck=setInterval(()=>{
-        var p2Array=document.querySelectorAll('.p2');
-        var msgId=p2Array[p2Array.length-1].id;
-       var msgArray=[];
-       get(ref(db,'/chats')).then((data)=>{
-       var dataVal=data.val();
-       for(var x in dataVal){
-        if(dataVal[x].p2===email && dataVal[x].p1===email2){
-            msgArray.push(dataVal[x]);
-        }
-       }
-       }).then(()=>{
-        if(msgArray[msgArray.length-1].chatId != msgId){
-            var div=sndC('div');
-            div.setAttribute('class','p2');
-            div.setAttribute('id',msgArray[msgArray.length-1].chatId);
-            div.innerHTML=`<pre>${msgArray[msgArray.length-1].chat}</pre>`;
-            snd('.chats').appendChild(div);
-            received.play();
-            snd('.chats').scrollTop = snd('.chats').scrollHeight;
-        }
-       })
-    },900);
+
+       var chatCount=document.querySelectorAll('.p2');
+
+        get(ref(db,'/chats')).then((data)=>{
+
+            var dataVal=data.val();
+            var p2Count=[];
+            for(var x in dataVal){
+                if(dataVal[x].p2===email && dataVal[x].p1===email2){
+                   p2Count.push(dataVal[x].chat);
+                   if(p2Count.length > chatCount.length){                   
+                    var div=sndC('div');
+                    div.setAttribute('class','p2');
+                    div.innerHTML=`<pre>${p2Count[p2Count.length-1]}</pre>`;
+                    snd('.chats').appendChild(div);
+                    received.play();
+                    snd('.chats').scrollTop = snd('.chats').scrollHeight;
+                   }
+                }
+            }
+
+        });
+
+    },500);
 }

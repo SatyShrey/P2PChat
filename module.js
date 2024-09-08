@@ -264,5 +264,5 @@ function checkMsg(){
             snd('.chats').scrollTop = snd('.chats').scrollHeight;
         }
        })
-    },500);
+    },900);
 }

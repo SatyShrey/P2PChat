@@ -24,6 +24,8 @@ var email;
 var Alert;
 var email2;
 var recheck;
+var received=new Audio('received.mp3');
+var sent=new Audio('sent.mp3');
 var authError='FirebaseError: Firebase: Error (auth/invalid-credential).';
 var existError="FirebaseError: Firebase: Error (auth/email-already-in-use).";
 var passwordError="FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password).";
@@ -159,7 +161,6 @@ function loadContacts(){
       } else{snd('.list').innerHTML='<i>Sorry no accounts found for chatting.</i>'}
    });
 
-
    //logout...............................................................
    snd('#logout').addEventListener('click',()=>{
     Alert.innerHTML=`<div class="alertBox">
@@ -223,7 +224,6 @@ document.addEventListener('click',(e)=>{
 
         snd('#send').addEventListener('click',()=>{
             if(snd('#msg').value.trim()!=''){
-                var sent=new Audio('sent.mp3');
                 sent.play();
                 set(ref(db,`/chats/${Date.now()}`),{
                     p1:email,
@@ -255,21 +255,18 @@ function checkMsg(){
             for(var x in dataVal){
                 if(dataVal[x].p2===email && dataVal[x].p1===email2){
                    p2Count.push(dataVal[x].chat);
-                   if(p2Count.length > chatCount.length){
-                     
+                   if(p2Count.length > chatCount.length){                   
                     var div=sndC('div');
                     div.setAttribute('class','p2');
                     div.innerHTML=`<pre>${p2Count[p2Count.length-1]}</pre>`;
                     snd('.chats').appendChild(div);
-                    var received=new Audio('received.mp3');
                     received.play();
                     snd('.chats').scrollTop = snd('.chats').scrollHeight;
-
                    }
                 }
             }
 
         });
 
-    },500);
+    },400);
 }

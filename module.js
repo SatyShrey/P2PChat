@@ -203,20 +203,16 @@ document.addEventListener('click',(e)=>{
         get(ref(db,'/chats')).then((data)=>{
             snd('.chats').innerHTML='';
             var dataVal=data.val();
-            var chatBox=[];
             for(var x in dataVal){
-                if((dataVal[x].p1===email && dataVal[x].p2===email2) || (dataVal[x].p2===email && dataVal[x].p1===email2)){
-                    chatBox.push(dataVal[x])
+                if((dataVal[x].p1===email && dataVal[x].p2===email2) || (dataVal[x].p2===email && dataVal[x].p1===email2)){                  
+                   var div=sndC('div');
+                   if(dataVal[x].p1===email){div.setAttribute('class','p1')}
+                   else{div.setAttribute('class','p2')}
+                   div.setAttribute('id',dataVal[x].chatId);
+                   div.innerHTML=`<pre>${dataVal[x].chat}</pre>`;
+                   snd('.chats').appendChild(div);
                 }
             }
-            chatBox.map(obj=>{
-                var div=sndC('div');
-                if(obj.p1===email){div.setAttribute('class','p1')}
-                else{div.setAttribute('class','p2')}
-                div.setAttribute('id',obj.chatId);
-                div.innerHTML=`<pre>${obj.chat}</pre>`;
-                snd('.chats').appendChild(div);
-            });
         }).then(()=>{
             snd('.chats').scrollTop = snd('.chats').scrollHeight;
             checkMsg();

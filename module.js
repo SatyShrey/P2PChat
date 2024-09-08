@@ -215,7 +215,10 @@ document.addEventListener('click',(e)=>{
                 div.innerHTML=`<pre>${obj.chat}</pre>`;
                 snd('.chats').appendChild(div);
             });
-        }).then(()=>{checkMsg();});
+        }).then(()=>{
+            snd('.chats').scrollTop = snd('.chats').scrollHeight;
+            checkMsg();
+        });
 
 
         snd('#send').addEventListener('click',()=>{

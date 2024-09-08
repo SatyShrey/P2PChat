@@ -292,16 +292,12 @@ textarea{
     background-color:transparent;
 }
 
-#send:hover{
-    transform: translate(9px);
-}
-
 #send:active{
-    color: red;
+    color: aqua;
 }
 
 #back:hover{
-    transform: translate(-9px);
+    transform: translate(-10%);
  }
 
 pre{
